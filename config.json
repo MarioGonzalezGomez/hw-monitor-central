@@ -1,0 +1,43 @@
+{
+    "server": {
+        "port": 3000
+    },
+    "refresh": {
+        "defaultInterval": 5000,
+        "autoRefresh": true
+    },
+    "thresholds": {
+        "cpu": {
+            "warn": 75,
+            "danger": 85,
+            "max": 100
+        },
+        "gpu": {
+            "warn": 70,
+            "danger": 85,
+            "max": 100
+        }
+    },
+    "machines": [
+        {
+            "name": "IPF81",
+            "ip": "172.17.35.235",
+            "port": 8085
+        },
+        {
+            "name": "IPF82",
+            "ip": "172.17.35.236",
+            "port": 8085
+        },
+        {
+            "name": "IPF83",
+            "ip": "172.17.35.237",
+            "port": 8085
+        },
+        {
+            "name": "IPF84",
+            "ip": "172.17.35.238",
+            "port": 8085
+        }
+    ]
+}
