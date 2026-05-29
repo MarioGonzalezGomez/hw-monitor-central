@@ -1,5 +1,5 @@
 """
-HW Monitor Central — Proxy Server (Python)
+HW Monitor Central - Proxy Server (Python)
 
 A lightweight Python server that:
 1. Serves the static frontend (HTML/CSS/JS)
@@ -74,11 +74,11 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         """Custom log format."""
         msg = format % args
         if '200' in msg or '304' in msg:
-            print(f"  \033[32m✓\033[0m {msg}")
+            print(f"  [OK] {msg}")
         elif '502' in msg or '504' in msg or '500' in msg:
-            print(f"  \033[31m✗\033[0m {msg}")
+            print(f"  [ERR] {msg}")
         else:
-            print(f"  · {msg}")
+            print(f"  [..] {msg}")
 
     def _set_cors_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -171,7 +171,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             self._set_cors_headers()
             self.end_headers()
             self.wfile.write(json.dumps({
-                'error': f'Cannot connect to {host}:{port} — {str(e.reason)}',
+                'error': f'Cannot connect to {host}:{port} - {str(e.reason)}',
                 'host': host,
                 'port': port
             }).encode())
@@ -228,29 +228,29 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
 
 
 def main():
-    server = http.server.HTTPServer(('0.0.0.0', PORT), ProxyHandler)
+    # Threaded server: one slow machine no longer blocks others.
+    server_class = getattr(http.server, 'ThreadingHTTPServer', http.server.HTTPServer)
+    server = server_class(('0.0.0.0', PORT), ProxyHandler)
 
     machine_count = len(config.get('machines', []))
-    
+
     print('')
-    print('  ╔══════════════════════════════════════════════╗')
-    print('  ║       HW Monitor Central — Server           ║')
-    print('  ╠══════════════════════════════════════════════╣')
-    print(f'  ║  🌐 http://localhost:{PORT:<25}║')
-    print(f'  ║  📋 Configuración: config.json              ║')
-    print(f'  ║  🖥  Equipos configurados: {machine_count:<19}║')
-    print('  ║                                              ║')
-    
+    print('  ===============================================')
+    print('         HW Monitor Central - Server')
+    print('  ===============================================')
+    print(f'  URL: http://localhost:{PORT}')
+    print('  Configuracion: config.json')
+    print(f'  Equipos configurados: {machine_count}')
+    print('')
+
     for machine in config.get('machines', []):
         name = machine.get('name', '?')
         ip = machine.get('ip', '?')
         port = machine.get('port', 8085)
-        line = f'    → {name:8} {ip}:{port}'
-        print(f'  ║{line:<44}║')
-    
-    print('  ║                                              ║')
-    print('  ║  Presiona Ctrl+C para detener                ║')
-    print('  ╚══════════════════════════════════════════════╝')
+        print(f'    -> {name:8} {ip}:{port}')
+
+    print('')
+    print('  Presiona Ctrl+C para detener')
     print('')
 
     try:
